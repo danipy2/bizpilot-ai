@@ -17,9 +17,9 @@ aiosqlite==0.21.0
 # PDF Generation
 fpdf2==2.8.3
 
-# HTTP Requests (for exchange rate API)
+# HTTP Requests
 httpx==0.28.1
 
 # Utilities
 python-dotenv==1.1.0
-pydantic>=2.0.0,<2.11.0
+pydantic==2.11.3
