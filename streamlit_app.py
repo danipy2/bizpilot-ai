@@ -15,9 +15,23 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+import os
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
+
+# --- Load Streamlit Cloud secrets into env vars ---
+if "GOOGLE_API_KEY" in st.secrets:
+    os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
+if "EXCHANGE_RATE_API_KEY" in st.secrets:
+    os.environ["EXCHANGE_RATE_API_KEY"] = st.secrets["EXCHANGE_RATE_API_KEY"]
+
+# --- Check API key before importing AI modules ---
+if not os.environ.get("GOOGLE_API_KEY"):
+    st.error("⚠️ **GOOGLE_API_KEY not configured.** Please add it in Streamlit Cloud → App Settings → Secrets.")
+    st.code('[secrets]\nGOOGLE_API_KEY = "your-gemini-api-key-here"', language="toml")
+    st.info("Get a free Gemini API key at https://aistudio.google.com/apikey")
+    st.stop()
 
 from core.agent import run_agent
 from database.db import init_db, seed_data, save_message, get_conversation_history

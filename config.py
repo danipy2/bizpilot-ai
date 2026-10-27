@@ -1,6 +1,7 @@
 """
 BizPilot AI — Configuration
-Centralized settings for the business automation agent.
+Centralised settings for the business automation agent.
+Supports both local .env and Streamlit Cloud secrets.
 """
 
 import os
@@ -8,6 +9,17 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# --- Load Streamlit Cloud secrets if available ---
+try:
+    import streamlit as st
+    if hasattr(st, "secrets"):
+        if "GOOGLE_API_KEY" in st.secrets:
+            os.environ.setdefault("GOOGLE_API_KEY", st.secrets["GOOGLE_API_KEY"])
+        if "EXCHANGE_RATE_API_KEY" in st.secrets:
+            os.environ.setdefault("EXCHANGE_RATE_API_KEY", st.secrets["EXCHANGE_RATE_API_KEY"])
+except Exception:
+    pass  # Not running inside Streamlit, that's fine
 
 # --- Paths ---
 BASE_DIR = Path(__file__).parent
