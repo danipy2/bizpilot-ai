@@ -1,6 +1,7 @@
 """
 BizPilot AI — Email Drafting Tool
 Agent tool for composing professional business emails.
+The LLM composes the actual email body content; this tool formats it properly.
 """
 
 from langchain.tools import tool
@@ -24,10 +25,17 @@ def draft_email(
         tone: Tone of the email (professional, friendly, formal, urgent). Default: professional.
 
     Returns:
-        A formatted, ready-to-send email draft.
+        A formatted, ready-to-send email draft with the full composed body.
     """
-    # The agent uses the LLM's capability to draft the actual content
-    # This tool structures the output properly
+    # Tone-based greeting/sign-off mapping
+    tone_map = {
+        "professional": ("Dear", "Best regards,\nBizPilot AI Business Team"),
+        "friendly":     ("Hi", "Warm regards,\nBizPilot AI Business Team"),
+        "formal":       ("To Whom It May Concern" if "@" not in to else f"Dear {to.split('@')[0].title()},", "Yours sincerely,\nBizPilot AI Business Team"),
+        "urgent":       ("Dear", "Urgent regards,\nBizPilot AI Business Team"),
+    }
+    greeting_prefix, sign_off = tone_map.get(tone.lower(), ("Dear", "Best regards,\nBizPilot AI Business Team"))
+    recipient_name = to.split("@")[0].title() if "@" in to else to
 
     email_draft = f"""
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -35,15 +43,17 @@ def draft_email(
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 To:      {to}
 Subject: {subject}
-Tone:    {tone}
+Tone:    {tone.title()}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Based on instructions: {body_instructions}
+{greeting_prefix} {recipient_name},
 
-[The AI agent will compose the full email body using the instructions above]
+{body_instructions}
+
+{sign_off}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Status: 📝 DRAFT (Review before sending)
+📝 Status: DRAFT — Please review before sending
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
     return email_draft

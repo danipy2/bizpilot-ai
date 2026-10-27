@@ -225,7 +225,7 @@ s1, s2, s3, s4 = st.columns(4)
 for col, val, lbl in [
     (s1, "6", "Available Tools"),
     (s2, str(n_turns), "Conversation Turns"),
-    (s3, "Gemini 2.0", "AI Model"),
+    (s3, "Gemini", "AI Model"),
     (s4, "100% Free", "API Cost"),
 ]:
     col.markdown(f"""<div class="stat-row">

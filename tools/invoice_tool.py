@@ -123,7 +123,7 @@ def generate_invoice(
     filepath = str(config.OUTPUT_DIR / filename)
     pdf.output(filepath)
 
-    # Return summary
+    # Return summary (note: on Render the file is on server, so show full details in chat)
     items_summary = "\n".join(
         f"  • {item['name']}: {item['quantity']} × {item['unit_price']:,.2f} = {item['line_total']:,.2f} ETB"
         for item in parsed_items
@@ -135,8 +135,9 @@ def generate_invoice(
         f"👤 Customer: {customer_name}\n"
         f"📅 Date: {invoice_date}\n\n"
         f"Items:\n{items_summary}\n\n"
-        f"💰 Subtotal: {total:,.2f} ETB\n"
-        f"💰 VAT (15%): {vat:,.2f} ETB\n"
+        f"💰 Subtotal:    {total:,.2f} ETB\n"
+        f"💰 VAT (15%):   {vat:,.2f} ETB\n"
         f"💰 Grand Total: {grand_total:,.2f} ETB\n\n"
-        f"📁 Saved to: {filepath}"
+        f"📁 PDF saved on server as: {filename}\n"
+        f"💡 Share the above invoice summary with your customer."
     )

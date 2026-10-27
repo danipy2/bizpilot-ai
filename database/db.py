@@ -129,18 +129,19 @@ def seed_data() -> None:
 
     # --- Seed Sales (last 30 days) ---
     customer_names = [c[0] for c in customers]
+    rng = random.Random(42)  # Fixed seed for reproducible demo data
     sales = []
     for day_offset in range(30, 0, -1):
         # 2-5 sales per day
-        num_sales = random.randint(2, 5)
+        num_sales = rng.randint(2, 5)
         sale_date = (datetime.now() - timedelta(days=day_offset)).strftime("%Y-%m-%d %H:%M:%S")
         for _ in range(num_sales):
-            product_idx = random.randint(0, len(products) - 1)
+            product_idx = rng.randint(0, len(products) - 1)
             product = products[product_idx]
-            quantity = random.randint(1, 5)
+            quantity = rng.randint(1, 5)
             unit_price = product[2]
             total = unit_price * quantity
-            customer = random.choice(customer_names)
+            customer = rng.choice(customer_names)
             sales.append((product_idx + 1, quantity, unit_price, total, customer, sale_date))
 
     cursor.executemany(
