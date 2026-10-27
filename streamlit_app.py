@@ -18,15 +18,17 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Load Streamlit Cloud secrets
-if "GOOGLE_API_KEY" in st.secrets:
-    os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
-if "EXCHANGE_RATE_API_KEY" in st.secrets:
-    os.environ["EXCHANGE_RATE_API_KEY"] = st.secrets["EXCHANGE_RATE_API_KEY"]
+# Load secrets — works on both Streamlit Cloud and Render.com
+try:
+    if "GOOGLE_API_KEY" in st.secrets:
+        os.environ.setdefault("GOOGLE_API_KEY", st.secrets["GOOGLE_API_KEY"])
+    if "EXCHANGE_RATE_API_KEY" in st.secrets:
+        os.environ.setdefault("EXCHANGE_RATE_API_KEY", st.secrets["EXCHANGE_RATE_API_KEY"])
+except Exception:
+    pass  # On Render.com, secrets come via env vars directly — that's fine
 
 if not os.environ.get("GOOGLE_API_KEY"):
-    st.error("⚠️ **GOOGLE_API_KEY not configured.**")
-    st.code('[secrets]\nGOOGLE_API_KEY = "your-gemini-api-key-here"', language="toml")
+    st.error("⚠️ **GOOGLE_API_KEY not configured.** Add it as an Environment Variable on Render.com.")
     st.stop()
 
 sys.path.insert(0, str(Path(__file__).parent))
